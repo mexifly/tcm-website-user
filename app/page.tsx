@@ -6,10 +6,12 @@ export default function Home() {
   const handleNavigation = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    const userAccepted = window.confirm("This is a test only");
+    const userAccepted = window.confirm("Disclaimer: This website provides health advice only and is not qualified to provide medical diagnosis and treatment.");
 
     if (userAccepted) {
       window.location.href = 'test/';
+    } else {
+      alert("You can not use this website");
     }
   };
 
@@ -23,6 +25,7 @@ export default function Home() {
         <p className="mb-4 text-2xl font-semibold text-gray-800">
           Welcome to the TCM Questionnaire
         </p>
+        {/* 将事件绑定到按钮的单击事件 */}
         <button onClick={handleNavigation} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
           Go to Home Page
         </button>
@@ -33,4 +36,3 @@ export default function Home() {
     </main>
   );
 }
-
