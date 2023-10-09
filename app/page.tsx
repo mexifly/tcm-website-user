@@ -23,7 +23,7 @@ export default function Home() {
 
       <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-lg text-center bg-white shadow-md rounded-md p-8">
         <p className="mb-4 text-2xl font-semibold text-gray-800">
-          Welcome to the TCM Questionnaire
+          Welcome to TCM Health Website
         </p>
         {/* 将事件绑定到按钮的单击事件 */}
         <button onClick={handleNavigation} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
