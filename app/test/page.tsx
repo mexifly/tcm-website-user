@@ -117,6 +117,20 @@ export default function QuestionnairePage() {
   };
 
   const currentQuestions = allQuestions[currentPart];
+  const isLastPart = currentPart === allQuestions.length - 1;
+  const isAllQuestionsAnswered = Object.keys(answers).length === allQuestions.flat().length;
+
+  const handleSubmit = () => {
+    if (isAllQuestionsAnswered) {
+      // 所有问题都已答完，可以执行提交操作
+      // 在这里执行提交逻辑，可以将答案发送到后端或执行其他操作
+      // 此处仅示例一个简单的弹出提示
+      alert("Thank you for submitting your answers!");
+    } else {
+      // 还有未回答的问题
+      alert("Please answer all questions before submitting.");
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-200">
@@ -165,12 +179,23 @@ export default function QuestionnairePage() {
           >
             Previous
           </button>
-          <button
-            onClick={() => setCurrentPart((prev) => Math.min(prev + 1, allQuestions.length - 1))}
-            className={`${currentPart === allQuestions.length - 1 ? 'invisible' : ''} bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md`}
-          >
-            Next
-          </button>
+          {isLastPart ? (
+            <button
+              onClick={handleSubmit}
+              className={`${isAllQuestionsAnswered ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'
+                } text-white font-semibold py-2 px-4 rounded-md`}
+              disabled={!isAllQuestionsAnswered}
+            >
+              Submit
+            </button>
+          ) : (
+            <button
+              onClick={() => setCurrentPart((prev) => Math.min(prev + 1, allQuestions.length - 1))}
+              className={`${currentPart === allQuestions.length - 1 ? 'invisible' : ''} bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md`}
+            >
+              Next
+            </button>
+          )}
         </div>
       </div>
 
