@@ -68,8 +68,7 @@ const allQuestions: Question[][] = [
     { id: 3, textEn: "Do you feel bitterness or a strange taste in your mouth?", textCn: "您感到口苦或嘴里有异味吗?" },
     { id: 4, textEn: "Do you have sticky stools or always feel you don't have a complete defecate?", textCn: "您大便黏滞不爽、有解不尽的感觉吗?" },
     { id: 5, textEn: "Do you feel your urethra has a hot sensation when you urine? Or your urine is dark in color?", textCn: "您小便时尿道有发热感、尿色浓(深)吗？" },
-    { id: 6, textEn: "Does your discharge yellow or brown in color?", textCn: "您带下色黄(白带颜色发黄)吗? （女性回答）" },
-    { id: 7, textEn: "Does your private part area feel damp?", textCn: "您的阴囊部位潮湿吗? （男性回答）" },
+    { id: 6, textEn: "Does your discharge yellow or brown in color?(The female answer) / Does your private part area feel damp?(The male answer)", textCn: "您带下色黄(白带颜色发黄)吗? （女性回答）/ 您的阴囊部位潮湿吗? （男性回答）" },
   ],
   [
     // Part 7 / 9
@@ -145,32 +144,35 @@ export default function QuestionnairePage() {
           <p className="text-2xl font-semibold">Part {currentPart + 1}</p> {/* 添加部分标题 */}
         </div>
 
-        {currentQuestions.map((question) => (
-          <div
-            key={question.id}
-            className={`mb-6 ${currentQuestionId === question.id ? 'bg-yellow-100' : ''
-              }`}
-            onMouseEnter={() => setCurrentQuestionId(question.id)}
-            onMouseLeave={() => setCurrentQuestionId(null)}
-          >
-            <p className="text-xl font-semibold">{question.textEn}</p>
-            <p className="mb-2">{question.textCn}</p>
-            <div className="flex justify-center items-center space-x-4">
-              {scaleOptions.map((option, index) => (
-                <label key={option} className="flex items-center">
-                  <input
-                    type="radio"
-                    name={`q${question.id}`}
-                    value={index + 1}
-                    checked={answers[`${currentPart}-${question.id}`] === (index + 1).toString()}
-                    onChange={() => handleRadioChange(currentPart, question.id, (index + 1).toString())}
-                  />
-                  <span className="ml-2">{option}</span>
-                </label>
-              ))}
+        {currentQuestions.map((question) => {
+          const questionKey = `${currentPart}-${question.id}`;
+          const isAnswered = questionKey in answers;
+          return (
+            <div
+              key={question.id}
+              className={`mb-6 ${currentQuestionId === question.id ? 'bg-yellow-100' : ''} ${isAnswered ? 'bg-blue-100' : ''}`}
+              onMouseEnter={() => setCurrentQuestionId(question.id)}
+              onMouseLeave={() => setCurrentQuestionId(null)}
+            >
+              <p className="text-xl font-semibold">{question.textEn}</p>
+              <p className="mb-2">{question.textCn}</p>
+              <div className="flex justify-center items-center space-x-4">
+                {scaleOptions.map((option, index) => (
+                  <label key={option} className="flex items-center" style={{ cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name={`q${question.id}`}
+                      value={index + 1}
+                      checked={answers[questionKey] === (index + 1).toString()}
+                      onChange={() => handleRadioChange(currentPart, question.id, (index + 1).toString())}
+                    />
+                    <span className="ml-2">{option}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <div className="flex justify-between mt-4">
           <button
@@ -181,9 +183,8 @@ export default function QuestionnairePage() {
           </button>
           {isLastPart ? (
             <button
-              onClick={handleSubmit}
-              className={`${isAllQuestionsAnswered ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'
-                } text-white font-semibold py-2 px-4 rounded-md`}
+              onClick={handleSubmit} // 点击提交按钮时触发 handleSubmit 函数
+              className={`${isAllQuestionsAnswered ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'} text-white font-semibold py-2 px-4 rounded-md`}
               disabled={!isAllQuestionsAnswered}
             >
               Submit
