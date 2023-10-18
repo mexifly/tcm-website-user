@@ -1,0 +1,22 @@
+.page-container {
+      background-image: url('/home_bg.jpg');
+      /* 设置背景图片 */
+      background-size: cover;
+      background-position: center;
+      min-height: 100vh;
+      /* 使背景图片占满整个屏幕 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* 居中内容 */
+  }
+
+  .content-container {
+      background-color: rgba(255, 255, 255, 0);
+      /* 设置为全透明，此处0代表完全透明 */
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 0 auto;
+      max-width: 5xl;
+  }
