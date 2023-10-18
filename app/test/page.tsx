@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import './test.css';
 
 interface Question {
   id: number;
@@ -130,12 +131,30 @@ export default function QuestionnairePage() {
       alert("Please answer all questions before submitting.");
     }
   };
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [userAccepted, setUserAccepted] = useState(false);
+  const [showInfoMessage, setShowInfoMessage] = useState(false);
 
+  const handleAgree = () => {
+    setUserAccepted(true);
+    setShowDisclaimer(false);
+  };
+
+  const handleDisagree = () => {
+    setUserAccepted(false);
+    setShowDisclaimer(false);
+    setShowInfoMessage(true);
+  };
+
+  const closeInfoMessage = () => {
+    setShowInfoMessage(false);
+    // navagate to '../home'page
+    window.location.href = '../';
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gray-200">
-      <div className="z-10 max-w-2xl w-full items-center justify-center font-mono text-lg text-center bg-white shadow-md rounded-md p-8">
+    <main className="page-container flex min-h-screen flex-col items-center justify-center p-24 bg-gray-500">
+      <div className="content-container z-10 max-w-2xl w-full items-center justify-center font-mono text-lg text-center shadow-md rounded-md p-8">
         <p className="mb-4 text-2xl font-semibold text-gray-800">TCM Scaled Questions</p>
-
         {/* TCM Scaled Questions content here */}
 
         <hr className="my-8 border-t border-gray-400" />
@@ -177,7 +196,7 @@ export default function QuestionnairePage() {
         <div className="flex justify-between mt-4">
           <button
             onClick={() => setCurrentPart((prev) => Math.max(prev - 1, 0))}
-            className={`${currentPart === 0 ? 'invisible' : ''} bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md`}
+            className={`${currentPart === 0 ? 'invisible' : ''} btn btn-primary`}
           >
             Previous
           </button>
@@ -192,14 +211,39 @@ export default function QuestionnairePage() {
           ) : (
             <button
               onClick={() => setCurrentPart((prev) => Math.min(prev + 1, allQuestions.length - 1))}
-              className={`${currentPart === allQuestions.length - 1 ? 'invisible' : ''} bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md`}
+                className={`${currentPart === allQuestions.length - 1 ? 'invisible' : ''} btn btn-primary`}
             >
               Next
             </button>
           )}
         </div>
       </div>
+      {showDisclaimer && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-md shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">Disclaimer</h2>
+            <p className="text-gray-700">
+              This website provides health advice only and is not qualified to provide medical diagnosis and treatment.
+            </p>
+            <div className="mt-4 flex justify-end">
+              <button type="button" onClick={handleAgree} className="btn btn-success mx-2">Agree</button>
+              <button type="button" onClick={handleDisagree} className="btn btn-secondary" data-bs-dismiss="modal">Disagree</button>
+            </div>
+          </div>
+        </div>
+      )}
 
+      {showInfoMessage && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded-md shadow-md">
+            <h3>Notice</h3>
+            <p className="text-warning-emphasis">You cannot use this website as you disagreed the disclaimer.</p>
+            <div className="mt-4 flex justify-end">
+              <button type="button" onClick={closeInfoMessage} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Rest of your layout components (like the Image components and footer links) goes here ... */}
     </main>
   );
