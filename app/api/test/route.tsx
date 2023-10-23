@@ -40,7 +40,7 @@ export async function GET(request: any): Promise<Response> {
     return new Response(tableHTML, {
         status: 200,
         headers: {
-            "Content-Type": "text/html"
+        "Content-Type": "text/html; charset=UTF-8"
         }
     });
 }
