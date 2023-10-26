@@ -46,7 +46,7 @@ CREATE TABLE `test` (
 -- 转存表中的数据 `test`
 --
 
-INSERT INTO test (GroupId, id, textEn, textCn) VALUES
+INSERT INTO test (groupId, id, textEn, textCn) VALUES
   (1, 1, 'Do you feel energetic?', '你精力充沛吗?'),
   (1, 2, 'Do you feel tired easily?', '您容易疲乏吗?'),
   (1, 3, 'Comparing to people around you, do you always feel colder and need to wear more clothes to keep warm?', '您比一般人耐受不了寒冷吗?'),
@@ -57,7 +57,7 @@ INSERT INTO test (GroupId, id, textEn, textCn) VALUES
   (1, 8, 'Do you have difficulties falling asleep at night?', '您容易失眠吗?');
 
 -- Part 2/9
-INSERT INTO test (GroupId, id, textEn, textCn) VALUES
+INSERT INTO test (groupId, id, textEn, textCn) VALUES
   (2, 1, 'Do you feel tired easily?', '您容易疲乏吗?'),
   (2, 2, 'Do you feel shortness of breath easily?', '您容易气短(呼吸短促，接不上气)吗?'),
   (2, 3, 'Does your voice sound too soft?', '您说话声音低弱无力吗?'),
@@ -147,7 +147,7 @@ INSERT INTO test (groupId, id, textEn, textCn) VALUES
 -- 表的索引 `test`
 --
 ALTER TABLE `test`
-  ADD PRIMARY KEY (GroupId, id);
+  ADD PRIMARY KEY (groupId, id);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
