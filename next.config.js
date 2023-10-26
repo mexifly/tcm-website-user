@@ -5,7 +5,7 @@ const nextConfig = {
         'MYSQL_PORT': '3306',
         'MYSQL_DATABASE': 'test',
         'MYSQL_USER': 'root',
-        'MYSQL_PASSWORD': '',
+        'MYSQL_PASSWORD': '123456',
     }
 }
 

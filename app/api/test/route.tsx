@@ -1,10 +1,11 @@
 import { query } from "@/lib/db";
 
-// Define the User type
+// Define the Question type
 type Question = {
+    groupId: number;
     id: number;
-    questionEN: string;
-    questionCN: string;
+    textEn: string;
+    textCn: string;
 };
 
 export async function GET(request: any): Promise<Response> {
@@ -13,34 +14,28 @@ export async function GET(request: any): Promise<Response> {
         values: [],
     }) as Question[];
 
-    // Convert the user data into an HTML table
-    let tableContent = questions.map((question: Question) => `
-        <tr>
-            <td>${question.id}</td>
-            <td>${question.questionEN}</td>
-            <td>${question.questionCN}</td>
-        </tr>
-    `).join('');
+    // Group the questions by groupId into a two-dimensional array
+    const allQuestions: Question[][] = [];
+    let currentGroup: Question[] = [];
+    let currentGroupId: number | null = null;
 
-    let tableHTML = `
-        <table style="border: 1px solid black;">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${tableContent}
-            </tbody>
-        </table>
-    `;
+    questions.forEach((question: Question) => {
+        if (currentGroupId !== null && currentGroupId !== question.groupId) {
+            allQuestions.push([...currentGroup]);
+            currentGroup = [];
+        }
+        currentGroup.push(question);
+        currentGroupId = question.groupId;
+    });
 
-    return new Response(tableHTML, {
+    if (currentGroup.length > 0) {
+        allQuestions.push([...currentGroup]);
+    }
+
+    return new Response(JSON.stringify(allQuestions), {
         status: 200,
         headers: {
-        "Content-Type": "text/html; charset=UTF-8"
-        }
+            "Content-Type": "application/json",
+        },
     });
 }
