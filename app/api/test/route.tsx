@@ -10,7 +10,7 @@ type Question = {
 
 export async function GET(request: any): Promise<Response> {
     const questions: Question[] = await query({
-        query: "SELECT * FROM test",
+        query: "SELECT * FROM questions",
         values: [],
     }) as Question[];
 
@@ -39,3 +39,4 @@ export async function GET(request: any): Promise<Response> {
         },
     });
 }
+
