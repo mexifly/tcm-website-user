@@ -9,15 +9,14 @@
     align-items: center;
     justify-content: center;
     /* 居中内容 */
-}  
+}
 
 .content-container {
-      background-color: rgba(255, 255, 255, 0.7);
-      /* 设置为全透明，此处0代表完全透明 */
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      margin: 0 auto;
-      max-width: 5xl;
-  }
-
+    background-color: rgba(255, 255, 255, 0.7);
+    /* 设置为全透明，此处0代表完全透明 */
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    max-width: 5xl;
+}

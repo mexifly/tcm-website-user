@@ -29,8 +29,8 @@ export default function RootLayout({
             <a className="navbar-brand mx-3" href="/test">
               Test
             </a>
-            <a className="navbar-brand mx-3" href="/result">
-              Result
+            <a className="navbar-brand mx-3" href="/searchResults">
+              Search Results
             </a>
             <button
               className="navbar-toggler"

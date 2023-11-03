@@ -4,6 +4,7 @@ import './test.css';
 
 // Define the Question type
 type Question = {
+  [x: string]: any;
   groupId: number;
   id: number;
   textEn: string;
@@ -173,7 +174,6 @@ export default function QuestionnairePage() {
           </div>
         </div>
       )}
-      {/* Rest of your layout components (like the Image components and footer links) goes here ... */}
     </main>
   );
 }
