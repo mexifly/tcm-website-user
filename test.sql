@@ -21,7 +21,14 @@ SET time_zone = "+00:00";
 --
 -- 数据库： `test`
 --
+-- 检查是否存在名为 "test" 的数据库
+DROP DATABASE IF EXISTS test;
 
+-- 创建一个新的名为 "test" 的数据库
+CREATE DATABASE test;
+
+-- 切换到新创建的数据库
+USE test;
 -- --------------------------------------------------------
 
 --
@@ -83,7 +90,7 @@ INSERT INTO `questions` (`qid`, `groupId`, `id`, `textEn`, `textCn`) VALUES
 (40, 6, 1, 'Do you have oily skin on your face and nose area?', '您面部或鼻部有油腻感或者油亮发光吗?'),
 (41, 6, 2, 'Do you have pimples / breakout easily?', '您易生痤疮或者疮疖吗?'),
 (42, 6, 3, 'Do you feel bitterness or a strange taste in your mouth?', '您感到口苦或嘴里有异味吗?'),
-(43, 6, 4, 'Do you have sticky stools or always feel you don\'t have a complete defecate?', '您大便黏滞不爽、有解不尽的感觉吗?'),
+(43, 6, 4, 'Do you have sticky stools or always feel you don not have a complete defecate?', '您大便黏滞不爽、有解不尽的感觉吗?'),
 (44, 6, 5, 'Do you feel your urethra has a hot sensation when you urine? Or your urine is dark in color?', '您小便时尿道有发热感、尿色浓(深)吗?'),
 (45, 6, 6, 'Does your discharge yellow or brown in color?(The female answer) / Does your private part area feel damp?(The male answer)', '您带下色黄(白带颜色发黄)吗? （女性回答）/ 您的阴囊部位潮湿吗? （男性回答）'),
 (46, 7, 1, 'Do you find your skin with purple spots out of sudden?', '您的皮肤常在不知不觉中出现青紫瘀斑(皮下出血)吗?'),
@@ -99,7 +106,7 @@ INSERT INTO `questions` (`qid`, `groupId`, `id`, `textEn`, `textCn`) VALUES
 (56, 8, 4, 'Do you find yourself easily scared or frightened?', '您容易感到害怕或受到惊吓吗?'),
 (57, 8, 5, 'Do you feel fullness and pain around your chest area?', '您胁肋部胀痛吗?'),
 (58, 8, 6, 'Do you find yourself sigh out of sudden?', '您无缘无故叹气吗?'),
-(59, 8, 7, 'Do you have a feeling something stuck in your throat that you can\'t spit out or swallow?', '您咽喉部有异物感，且吐之不出、咽之不下吗?'),
+(59, 8, 7, 'Do you have a feeling something stuck in your throat that you can not spit out or swallow?', '您咽喉部有异物感，且吐之不出、咽之不下吗?'),
 (60, 9, 1, 'Do you easily allergic (drugs, food, smell, pollen, temperature change)?', '您容易过敏(对药物、食物、气味、花粉或在季节交替、气候变化时)吗?'),
 (61, 9, 2, 'Do you sneeze often even when you are not having flu?', '您没有感冒时也会打喷嚏吗？'),
 (62, 9, 3, 'Do you have stuffy, running nose even when you are not having flu?', '您没有感冒时也会鼻塞、流鼻涕吗?'),
