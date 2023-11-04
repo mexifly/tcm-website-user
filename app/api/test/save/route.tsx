@@ -3,13 +3,13 @@ import { OkPacket } from 'mysql2';
 
 
 async function readStream(stream: ReadableStream): Promise<any> {
-    const reader = stream.getReader();
+const reader = stream.getReader();
     const chunks: Uint8Array[] = [];
     let result;
 
     while (true) {
         const { done, value } = await reader.read();
-        
+
         if (done) {
             break;
         }

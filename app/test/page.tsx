@@ -5,6 +5,7 @@ import './test.css';
 // Define the Question type
 type Question = {
   [x: string]: any;
+  qid: number;
   groupId: number;
   id: number;
   textEn: string;
@@ -39,9 +40,9 @@ export default function QuestionnairePage() {
     fetchQuestions();
   }, []);
 
-  const handleRadioChange = (partIndex: number, questionId: number, value: string) => {
-    const key = `${partIndex}-${questionId}`;
-    setAnswers((prev) => ({ ...prev, [key]: value }));
+  const handleRadioChange = (qid: number, value: string) => {
+    //const key = `${partIndex}-${questionId}`;
+    setAnswers((prev) => ({ ...prev, [qid.toString()]: value }));
   };
 
   // const currentQuestions = allQuestions[currentPart];
@@ -50,13 +51,23 @@ export default function QuestionnairePage() {
   const isLastPart = currentPart === allQuestions.length - 1;
   const isAllQuestionsAnswered = Object.keys(answers).length === allQuestions.flat().length;
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (isAllQuestionsAnswered) {
-      // 所有问题都已答完，可以执行提交操作
-      // 在这里执行提交逻辑，可以将答案发送到后端或执行其他操作
-      // 此处仅示例一个简单的弹出提示
+      const response = await fetch("/api/test/save/", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(answers),
+    });
+
+    if (!response.ok) {
+      console.error('Server responded with status:', response.status, 'and status text:', response.statusText);
+      throw new Error('Failed to save answers');
+    }
+    
       alert("Thank you for submitting your answers!");
-    } else {
+    }  else {
       // 还有未回答的问题
       alert("Please answer all questions before submitting.");
     }
@@ -94,11 +105,11 @@ export default function QuestionnairePage() {
         </div>
 
         {currentQuestions.map((question : Question) => {
-          const questionKey = `${currentPart}-${question.id}`;
-          const isAnswered = questionKey in answers;
+          //const questionKey = `${currentPart}-${question.id}`;
+          const isAnswered = question.qid.toString() in answers;
           return (
             <div
-              key={question.id}
+              key={question.qid}
               className={`mb-6 ${currentQuestionId === question.id ? 'bg-yellow-100' : ''} ${isAnswered ? 'bg-blue-100' : ''}`}
               onMouseEnter={() => setCurrentQuestionId(question.id)}
               onMouseLeave={() => setCurrentQuestionId(null)}
@@ -110,10 +121,10 @@ export default function QuestionnairePage() {
                   <label key={option} className="flex items-center" style={{ cursor: 'pointer' }}>
                     <input
                       type="radio"
-                      name={`q${question.id}`}
+                      name={`q${question.qid}`}
                       value={index + 1}
-                      checked={answers[questionKey] === (index + 1).toString()}
-                      onChange={() => handleRadioChange(currentPart, question.id, (index + 1).toString())}
+                      checked={answers[question.qid.toString()] === (index + 1).toString()}
+                      onChange={() => handleRadioChange(question.qid, (index + 1).toString())}
                     />
                     <span className="ml-2">{option}</span>
                   </label>
