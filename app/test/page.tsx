@@ -47,28 +47,36 @@ export default function QuestionnairePage() {
 
   // const currentQuestions = allQuestions[currentPart];
   // Ensure that `currentQuestions` is only accessed when `allQuestions` is available
-  const currentQuestions : Question = allQuestions[currentPart] || [];
+  const currentQuestions: Question = allQuestions[currentPart] || [];
   const isLastPart = currentPart === allQuestions.length - 1;
   const isAllQuestionsAnswered = Object.keys(answers).length === allQuestions.flat().length;
 
-  const handleSubmit = async() => {
-    if (isAllQuestionsAnswered) {
-      const response = await fetch("/api/test/save/", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(answers),
-    });
+  const [hasSubmitted, setHasSubmitted] = useState(false); // 添加状态以跟踪是否已经提交
 
-    if (!response.ok) {
-      console.error('Server responded with status:', response.status, 'and status text:', response.statusText);
-      throw new Error('Failed to save answers');
-    }
-    
-      alert("Thank you for submitting your answers!");
-    }  else {
-      // 还有未回答的问题
+  const handleSubmit = async () => {
+    if (!hasSubmitted && isAllQuestionsAnswered) { // 检查是否已经提交且所有问题都已回答
+      try {
+        const response = await fetch("/api/test/save/", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(answers),
+        });
+
+        if (response.ok) {
+          alert("Thank you for submitting your answers!");
+          setHasSubmitted(true); // 设置已提交状态为true
+          window.location.href = '../showResults';
+        } else {
+          console.error('Server responded with status:', response.status, 'and status text:', response.statusText);
+          throw new Error('Failed to save answers');
+        }
+      } catch (error) {
+        console.error('Error saving answers:', error);
+        alert("An error occurred while saving answers.");
+      }
+    } else {
       alert("Please answer all questions before submitting.");
     }
   };
@@ -104,7 +112,7 @@ export default function QuestionnairePage() {
           <p className="text-2xl font-semibold">Part {currentPart + 1}</p> {/* 添加部分标题 */}
         </div>
 
-        {currentQuestions.map((question : Question) => {
+        {currentQuestions.map((question: Question) => {
           //const questionKey = `${currentPart}-${question.id}`;
           const isAnswered = question.qid.toString() in answers;
           return (
@@ -143,11 +151,12 @@ export default function QuestionnairePage() {
           </button>
           {isLastPart ? (
             <button
-              onClick={handleSubmit} // 点击提交按钮时触发 handleSubmit 函数
-              className={`${isAllQuestionsAnswered ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'} text-white font-semibold py-2 px-4 rounded-md`}
-              disabled={!isAllQuestionsAnswered}
+              // one user can only submit once after answering all questions
+              onClick={handleSubmit}
+              className={`${isAllQuestionsAnswered && !hasSubmitted ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'} text-white font-semibold py-2 px-4 rounded-md`}
+              disabled={!isAllQuestionsAnswered || hasSubmitted}
             >
-              Submit
+              {hasSubmitted ? "Submitted" : "Submit"}
             </button>
           ) : (
             <button
