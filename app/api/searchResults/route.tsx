@@ -8,20 +8,46 @@ type Respondent = {
     Constitution: string;
 };
 
+type Responses = {
+    questionId: number;
+    textEn: string;
+    textCn: string;
+    answer: number;
+    meaning: string;
+};
+
 export async function GET(request: Request) {
     try {
         // get referenceNumber from request
+        console.log("enter search result route")
         const { searchParams } = new URL(request.url);
         const referenceNumber = searchParams.get('referenceNumber');
-        console.log(referenceNumber);
-        const queryResult: Respondent[] = await query({
+        const respondentResult: Respondent[] = await query({
             query: "SELECT * FROM respondents WHERE reference_number = ? ORDER BY timestamp DESC LIMIT 1",
             values: [referenceNumber],
         }) as Respondent[];
 
-        if (queryResult.length > 0) {
-            const myResult = queryResult[0];
-            return new Response(JSON.stringify(myResult), {
+        const respondentId = respondentResult[0].id;
+        const responsesResult: Responses[] = await query({
+            query: `
+            SELECT r.question_id, q.textEn, q.textCn, r.answer, am.meaning
+            FROM responses r
+            JOIN questions q ON r.question_id = q.qid
+            JOIN answermap am ON r.answer = am.scale
+            WHERE r.respondent_id = ?
+            ORDER BY r.question_id ASC
+            `,
+            values: [respondentId],
+        }) as Responses[];
+
+        if (respondentResult.length > 0 && responsesResult.length > 0) {
+            const myResult = respondentResult[0];
+            const responseData = {
+                myResult,
+                responsesResult,
+            };
+            console.log(responseData)
+            return new Response(JSON.stringify(responseData), {
                 status: 200,
                 headers: {
                     "Content-Type": "application/json",
@@ -35,6 +61,7 @@ export async function GET(request: Request) {
                 },
             });
         }
+        
     } catch (error: any) { // Specify the type of error as 'any'
         console.log(`reqeust error: ${error}`)
         return new Response(JSON.stringify({ error: error.message }), {

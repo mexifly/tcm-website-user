@@ -4,18 +4,21 @@ import '../test/test.css';
 
 const SearchPage = () => {
     const [respondentsData, setRespondentsData] = useState([]);
+    const [responsesResult, setresponsesResult] = useState([]);
     const [referenceNumber, setReferenceNumber] = useState('');
     const [dataNotFound, setDataNotFound] = useState(false);
     const [isDataFetched, setIsDataFetched] = useState(false); // Add state to track if data is fetched
-
     const fetchData = async () => {
         try {
             const url = `/api/searchResults?referenceNumber=${referenceNumber}`;
             const response = await fetch(url);
 
             if (response.ok) {
-                const data = await response.json();
-                setRespondentsData(data);
+                const { myResult, responsesResult } = await response.json();
+                console.log(myResult)
+                console.log(responsesResult)
+                setRespondentsData(myResult);
+                setresponsesResult(responsesResult)
                 setDataNotFound(false);
                 setIsDataFetched(true); // Set data as fetched
             } else {
@@ -37,23 +40,49 @@ const SearchPage = () => {
                     <input
                         type="text"
                         className="form-control"
-                        style={{ marginRight: '10px', width: '300px'}}
+                        style={{ marginRight: '10px', marginBottom:'10px', width: '300px' }}
                         placeholder="Enter Reference No"
                         value={referenceNumber}
                         onChange={(e) => setReferenceNumber(e.target.value)}
                     />
-                    <button type="submit" onClick={fetchData}  className="btn btn-primary">Submit</button>
+                    <button type="submit" onClick={fetchData} className="btn btn-primary">
+                        Submit
+                    </button>
                 </div>
                 {dataNotFound && <p>Data not found</p>}
                 {isDataFetched && (
-                    <ul>
-                        <li className="respondent-info">
-                            <p><strong>Customer ID:</strong> {respondentsData.id}</p>
-                            <p><strong>Reference Number:</strong> {respondentsData.reference_number}</p>
-                            <p><strong>Timestamp:</strong> {respondentsData.timestamp}</p>
-                            <p><strong>Constitution:</strong> {respondentsData.constitution}</p>
-                        </li>
-                    </ul>
+                    <div>
+                        <div>
+                            <p>Respondent ID: {respondentsData.id}</p>
+                            <p>Reference Number: {respondentsData.reference_number}</p>
+                            <p>Timestamp: {respondentsData.timestamp}</p>
+                            <p>Constitution: {respondentsData.constitution}</p>
+                        </div>
+                        <div>
+                            <table style={{ margin: 'auto' }}>
+                                <thead>
+                                    <tr>
+                                        <th>Question ID</th>
+                                        <th>textEn</th>
+                                        <th>textCn</th>
+                                        <th>Answer</th>
+                                        <th>Meaning</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {responsesResult.map((response, index) => (
+                                        <tr key={index}>
+                                            <td>{response.question_id}</td>
+                                            <td>{response.textEn}</td>
+                                            <td>{response.textCn}</td>
+                                            <td>{response.answer}</td>
+                                            <td>{response.meaning}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 )}
             </div>
         </main>
