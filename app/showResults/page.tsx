@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import '../test/test.css';
 
-// Define the Result type
-type Respondent = {
-    id: number;
-    referenceNo: string;
-    timeStamp: string;
-    Constitution: string;
-};
+// // Define the Result type
+// type Respondent = {
+//     id: number;
+//     referenceNo: string;
+//     timeStamp: string;
+//     Constitution: string;
+// };
 
 const ResultsPage = () => {
-    const [respondentsData, setRespondentsData] = useState<Respondent[]>([]);
+    const [respondentsData, setRespondentsData] = useState([]);
 
     useEffect(() => {
         // Fetch the respondent data from the server when the component mounts

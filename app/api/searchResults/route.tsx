@@ -1,5 +1,5 @@
 import { query } from "@/lib/db";
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import { NextRequest } from "next/server";
 
 type Respondent = {
     id: number;
@@ -8,10 +8,12 @@ type Respondent = {
     Constitution: string;
 };
 
-export async function GET(request: VercelRequest, response: VercelResponse) {
+export async function GET(request: Request) {
     try {
-        const referenceNumber = request.query.referenceNumber as string;
-        console.log(referenceNumber)
+        // get referenceNumber from request
+        const { searchParams } = new URL(request.url);
+        const referenceNumber = searchParams.get('referenceNumber');
+        console.log(referenceNumber);
         const queryResult: Respondent[] = await query({
             query: "SELECT * FROM respondents WHERE reference_number = ? ORDER BY timestamp DESC LIMIT 1",
             values: [referenceNumber],
@@ -19,11 +21,28 @@ export async function GET(request: VercelRequest, response: VercelResponse) {
 
         if (queryResult.length > 0) {
             const myResult = queryResult[0];
-            response.status(200).json(myResult);
+            return new Response(JSON.stringify(myResult), {
+                status: 200,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
         } else {
-            response.status(404).json({ message: "No data found" });
+            return new Response(JSON.stringify({ message: "No data found" }), {
+                status: 404,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
         }
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
+    } catch (error: any) { // Specify the type of error as 'any'
+        console.log(`reqeust error: ${error}`)
+        return new Response(JSON.stringify({ error: error.message }), {
+            status: 500,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
     }
 }
+

@@ -8,7 +8,7 @@ type Respondent = {
     Constitution: string;
 };
 
-export async function GET(request: any): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
     try {
         const queryResult: Respondent[] = await query({
             query: "SELECT * FROM respondents ORDER BY timestamp DESC LIMIT 1",
