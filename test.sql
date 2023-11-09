@@ -116,6 +116,21 @@ INSERT INTO `questions` (`qid`, `groupId`, `id`, `textEn`, `textCn`) VALUES
 -- (66, 9, 7, 'Do you find purple spots on your skin due to allergic reasons?', '您的皮肤因过敏出现过紫癜(紫红色瘀点、瘀斑)吗?');
 
 -- --------------------------------------------------------
+--
+-- 表的结构 `answer`
+--
+Create TABLE `answermap` (
+  `meaning` varchar(255) NOT NULL,
+  `scale` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+INSERT INTO `answermap` (`meaning`, `scale`) VALUES
+("No", 1),
+("Seldom", 2),
+("Sometimes", 3),
+("Often", 4),
+("Always", 5);
 
 --
 -- 表的结构 `respondents`
