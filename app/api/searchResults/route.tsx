@@ -16,6 +16,17 @@ type Responses = {
     meaning: string;
 };
 
+type constitution = {
+    consId: number;
+    consType: string;
+    defination: string;
+    disturbance: string;
+    cause: string;
+    vigilant: string;
+    improvement: string;
+    recommondReceipe: string;
+}
+
 export async function GET(request: Request) {
     try {
         // get referenceNumber from request
@@ -39,11 +50,22 @@ export async function GET(request: Request) {
             `,
             values: [respondentId],
         }) as Responses[];
+        
+        const constitutionType = respondentResult[0].constitution;
+
+        console.log("consitution type is: " + constitutionType);
+
+        const constitutionResult: constitution[] = await query({
+            query: "SELECT * FROM constitution_results WHERE consType = ? ORDER BY consId DESC LIMIT 1;",
+            values: [constitutionType],
+        }) as constitution[];
 
         if (respondentResult.length > 0 && responsesResult.length > 0) {
             const myResult = respondentResult[0];
+            const constResult = constitutionResult[0];
             const responseData = {
                 myResult,
+                constResult,
                 responsesResult,
             };
             console.log(responseData)
