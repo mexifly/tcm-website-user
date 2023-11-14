@@ -2,6 +2,73 @@ import { query } from "@/lib/db";
 import { OkPacket } from 'mysql2';
 
 
+function calculateTransformationScoreByGroup(responses: Responses[]): { [groupId: number]: number } {
+    // Group responses by groupId
+    const groupedResponses = responses.reduce((acc, response) => {
+        const { groupId, answer } = response;
+        if (!acc[groupId]) {
+            acc[groupId] = [];
+        }
+        acc[groupId].push(answer);
+        return acc;
+    }, {} as { [groupId: number]: number[] });
+
+    // Calculate transformation score for each group
+    const transformationScoresByGroup: { [groupId: number]: number } = {};
+    for (const groupId in groupedResponses) {
+        const rawScores = groupedResponses[groupId];
+        const rawScore = rawScores.reduce((acc, score) => acc + score, 0);
+        const transformationScore = ((rawScore - rawScores.length) / (rawScores.length * 4)) * 100;
+        transformationScoresByGroup[parseInt(groupId)] = transformationScore;
+    }
+
+    return transformationScoresByGroup;
+}
+
+function calculateConstitutionType(transformationScoresByGroup: { [groupId: number]: number }): string {
+    const groupIds = Object.keys(transformationScoresByGroup);
+
+    // Exclude the first group
+    const remainingGroups = groupIds.slice(1);
+
+    // Find the group with the maximum transformation score
+    const maxTransformationScoreGroup = remainingGroups.reduce((maxGroup, groupId) => {
+        return transformationScoresByGroup[groupId] > transformationScoresByGroup[maxGroup] ? groupId : maxGroup;
+    }, remainingGroups[0]);
+
+    const maxTransformationScore = transformationScoresByGroup[maxTransformationScoreGroup];
+
+    if (maxTransformationScore < 30) {
+        return "Neutral Constitution";
+    } else {
+        // Find the index of the maxTransformationScoreGroup in the remainingGroups
+        const index = remainingGroups.indexOf(maxTransformationScoreGroup);
+
+        if (index !== -1) {
+            const constitutionTypes = [
+                "Qi Deficient Constitution",
+                "Yang Deficient Constitution",
+                "Yin Deficient Constitution",
+                "Phlegm-Dampness Constitution",
+                "Damp-Heat Constitution",
+                "Blood Stasis Constitution",
+                "Qi-Stagnation Constitution",
+                "Intrinsic Constitution",
+            ];
+
+            return constitutionTypes[index];
+        } else {
+            return "Unknown Constitution";
+        }
+    }
+}
+
+type Responses = {
+    questionId: number;
+    groupId: number;
+    answer: number;
+};
+
 async function readStream(stream: ReadableStream): Promise<any> {
 const reader = stream.getReader();
     const chunks: Uint8Array[] = [];
@@ -61,15 +128,30 @@ export async function POST(request: any): Promise<Response> {
         });
 
         await Promise.all(insertPromises);
-
+        console.log("successsfully inserts responses");
         // Here, compute the final result based on the answers and save in the respondents table. 
-        // As a placeholder, I'm using 'COMPUTED_RESULT_HERE'. Replace it with your computation logic.
-        const constitution = 'POWER!!!';
+        // get all responses from the current respondent id
+        const responsesResult: Responses[] = await query({
+            query: `
+            SELECT r.question_id, q.groupId, r.answer
+            FROM responses r
+            JOIN questions q ON r.question_id = q.qid
+            WHERE r.respondent_id = ?
+            ORDER BY r.question_id ASC;
+            `,
+            values: [respondent_id],
+        }) as Responses[];
+
+        console.log(responsesResult);
+        const transformationScoresByGroup = calculateTransformationScoreByGroup(responsesResult);
+        console.log("Transformation Score:", transformationScoresByGroup);
+        const constitutionType = calculateConstitutionType(transformationScoresByGroup);
+        console.log("Constitution Type:", constitutionType);
+
         await query({
             query: `UPDATE respondents SET constitution = ? WHERE id = ?`,
-            values: [constitution, respondent_id],
+            values: [constitutionType, respondent_id],
         });
-
         return new Response(JSON.stringify({ success: true, reference_number }), {
             status: 200,
             headers: {

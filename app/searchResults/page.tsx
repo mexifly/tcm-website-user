@@ -2,23 +2,39 @@
 import React, { useState } from 'react';
 import '../test/test.css';
 
+const isValidInput = (input: string) => {
+    // 正则表达式，表示只能包含数字和'-'
+    const regex = /^[0-9-]{20,25}$/;
+    return regex.test(input);
+};
+ 
 const SearchPage = () => {
     const [respondentsData, setRespondentsData] = useState([]);
     const [responsesResult, setresponsesResult] = useState([]);
+    const [constitutionResult, setconstitutionResult] = useState([]);
     const [referenceNumber, setReferenceNumber] = useState('');
     const [dataNotFound, setDataNotFound] = useState(false);
     const [isDataFetched, setIsDataFetched] = useState(false); // Add state to track if data is fetched
+    const [error, setError] = useState(''); // 新增用于存储错误消息的状态
     const fetchData = async () => {
         try {
+            if (!isValidInput(referenceNumber)) {
+                setError('Invalid input. Please enter 20-25 digits and/or hyphens.');
+                return;
+            }
+            // empty error message
+            setError('');
+
             const url = `/api/searchResults?referenceNumber=${referenceNumber}`;
             const response = await fetch(url);
 
             if (response.ok) {
-                const { myResult, responsesResult } = await response.json();
-                console.log(myResult)
-                console.log(responsesResult)
+                const { myResult,  constResult, responsesResult} = await response.json();
+                console.log(myResult);
+                console.log(responsesResult);
                 setRespondentsData(myResult);
-                setresponsesResult(responsesResult)
+                setresponsesResult(responsesResult);
+                setconstitutionResult(constResult);
                 setDataNotFound(false);
                 setIsDataFetched(true); // Set data as fetched
             } else {
@@ -49,14 +65,23 @@ const SearchPage = () => {
                         Submit
                     </button>
                 </div>
-                {dataNotFound && <p>Data not found</p>}
+                {error && <p className="text-red-500">{error}</p>} {/* show input error */}
+                {dataNotFound && <p className="text-red-500">Data not found</p>}
                 {isDataFetched && (
                     <div>
                         <div>
-                            <p>Respondent ID: {respondentsData.id}</p>
-                            <p>Reference Number: {respondentsData.reference_number}</p>
-                            <p>Timestamp: {respondentsData.timestamp}</p>
-                            <p>Constitution: {respondentsData.constitution}</p>
+                            <p><strong>Reference Number: </strong>{respondentsData.reference_number}</p>
+                            <p><strong>Timestamp: </strong>{respondentsData.timestamp}</p>
+                        </div>
+                        <div>
+                            <p><strong>Constitution ID:</strong> {constitutionResult.consId || 'N/A'}</p>
+                            <p><strong>Constitution Type:</strong> {constitutionResult.consType || 'N/A'}</p>
+                            <p><strong>Definition:</strong> {constitutionResult.definition || 'N/A'}</p>
+                            <p><strong>Disturbance:</strong> {constitutionResult.disturbance || 'N/A'}</p>
+                            <p><strong>Cause:</strong> {constitutionResult.cause || 'N/A'}</p>
+                            <p><strong>Vigilant:</strong> {constitutionResult.vigilant || 'N/A'}</p>
+                            <p><strong>Improvement:</strong> {constitutionResult.improvement || 'N/A'}</p>
+                            <p><strong>RecommondReceipe:</strong> {constitutionResult.recommondReceipe || 'N/A'}</p>
                         </div>
                         <div>
                             <table style={{ margin: 'auto' }}>

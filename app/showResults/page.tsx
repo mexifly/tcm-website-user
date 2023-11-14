@@ -11,16 +11,18 @@ import '../test/test.css';
 // };
 
 const ResultsPage = () => {
-    const [respondentsData, setRespondentsData] = useState([]);
+    const [respondentResult, setRespondentsData] = useState([]);
+    const [constitutionResult, setconstitutionResult] = useState([]);
 
     useEffect(() => {
         // Fetch the respondent data from the server when the component mounts
-        async function fetchRespondentsData() {
+        async function fetchResultData() {
             try {
                 const response = await fetch("/api/showResults");
                 if (response.ok) {
-                    const data = await response.json();
-                    setRespondentsData(data);
+                    const { resResult, constResult } = await response.json();
+                    setRespondentsData(resResult);
+                    setconstitutionResult(constResult);
                     console.log("successfully fetch the data!")
                 } else {
                     console.error('Failed to fetch respondents data:', response.status, response.statusText);
@@ -30,7 +32,7 @@ const ResultsPage = () => {
             }
         }
 
-        fetchRespondentsData();
+        fetchResultData();
     }, []);
 
     return (
@@ -41,10 +43,22 @@ const ResultsPage = () => {
                 </p>
                     <ul>
                         <li className="respondent-info">
-                            <p><strong>Customer ID:</strong> {respondentsData.id || 'N/A'}</p>
-                            <p><strong>Reference Number:</strong> {respondentsData.reference_number || 'N/A'}</p>
-                            <p><strong>Timestamp:</strong> {respondentsData.timestamp || 'N/A'}</p>
-                            <p><strong>Constitution:</strong> {respondentsData.constitution || 'N/A'}</p>
+                        <p><strong>Customer ID:</strong> {respondentResult.id || 'N/A'}</p>
+                        <p><strong>Reference Number:</strong> {respondentResult.reference_number || 'N/A'}</p>
+                        <p><strong>Timestamp:</strong> {respondentResult.timestamp || 'N/A'}</p>
+                        <p><strong>Constitution:</strong> {respondentResult.constitution || 'N/A'}</p>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li className="Constitution-info">
+                        <p><strong>Constitution ID:</strong> {constitutionResult.consId || 'N/A'}</p>
+                        <p><strong>Constitution Type:</strong> {constitutionResult.consType || 'N/A'}</p>
+                        <p><strong>Definition:</strong> {constitutionResult.definition || 'N/A'}</p>
+                        <p><strong>Disturbance:</strong> {constitutionResult.disturbance || 'N/A'}</p>
+                        <p><strong>Cause:</strong> {constitutionResult.cause || 'N/A'}</p>
+                        <p><strong>Vigilant:</strong> {constitutionResult.vigilant || 'N/A'}</p>
+                        <p><strong>Improvement:</strong> {constitutionResult.improvement || 'N/A'}</p>
+                        <p><strong>RecommondReceipe:</strong> {constitutionResult.recommondReceipe || 'N/A'}</p>
                         </li>
                     </ul>        
             </div>
