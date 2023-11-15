@@ -6,6 +6,7 @@ const nextConfig = {
         'MYSQL_DATABASE': 'test',
         'MYSQL_USER': 'root',
         'MYSQL_PASSWORD': '123456',
+        'MY_API_KEY': 'Bearer AtNcesaNx5nkRKjUdwEI5MZM7XikjExB4twJoxJi'
     }
 }
 
