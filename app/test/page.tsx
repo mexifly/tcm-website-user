@@ -21,6 +21,8 @@ export default function QuestionnairePage() {
   const [currentPart, setCurrentPart] = useState<number>(0);
   const [currentQuestionId, setCurrentQuestionId] = useState<number | null>(null);
   const [allQuestions, setAllQuestions] = useState([]); // Initialize with an empty array
+  const [isLoading, setIsLoading] = useState(false);
+
 
   useEffect(() => {
     async function fetchQuestions() {
@@ -56,6 +58,7 @@ export default function QuestionnairePage() {
   const handleSubmit = async () => {
     if (!hasSubmitted && isAllQuestionsAnswered) { // 检查是否已经提交且所有问题都已回答
       try {
+        setIsLoading(true); // Set loading to true when starting the request
         const response = await fetch("/api/test/save/", {
           method: 'POST',
           headers: {
@@ -75,6 +78,9 @@ export default function QuestionnairePage() {
       } catch (error) {
         console.error('Error saving answers:', error);
         alert("An error occurred while saving answers.");
+      }
+      finally {
+        setIsLoading(false); // Set loading to false regardless of success or failure
       }
     } else {
       alert("Please answer all questions before submitting.");
@@ -156,7 +162,7 @@ export default function QuestionnairePage() {
               className={`${isAllQuestionsAnswered && !hasSubmitted ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-300 cursor-not-allowed'} text-white font-semibold py-2 px-4 rounded-md`}
               disabled={!isAllQuestionsAnswered || hasSubmitted}
             >
-              {hasSubmitted ? "Submitted" : "Submit"}
+              {isLoading ? "Submitting...": hasSubmitted ? "Submitted" : "Submit"}
             </button>
           ) : (
             <button
