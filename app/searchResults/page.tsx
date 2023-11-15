@@ -70,6 +70,7 @@ const SearchPage = () => {
                 {isDataFetched && (
                     <div>
                         <div>
+                            <h5>Result Details</h5>
                             <p><strong>Reference Number: </strong>{respondentsData.reference_number}</p>
                             <p><strong>Timestamp: </strong>{respondentsData.timestamp}</p>
                         </div>
@@ -82,7 +83,7 @@ const SearchPage = () => {
                             <p><strong>Vigilant:</strong> {constitutionResult.vigilant || 'N/A'}</p>
                             <p><strong>Improvement:</strong> {constitutionResult.improvement || 'N/A'}</p>
                             <div>
-                            <strong>RecommendRecipe:</strong>
+                            <h5>Recommend Recipe</h5>
                             {(constitutionResult.recommendRecipe || 'N/A').split('\n').map((line, index) => (
                                 <React.Fragment key={index}>
                                 {line}<br/>
@@ -91,6 +92,7 @@ const SearchPage = () => {
                             </div>
                         </div>
                         <div>
+                            <h5>Responses from Customers</h5>
                             <table style={{ margin: 'auto' }}>
                                 <thead>
                                     <tr>
