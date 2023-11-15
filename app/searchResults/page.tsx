@@ -4,7 +4,7 @@ import '../test/test.css';
 
 const isValidInput = (input: string) => {
     // 正则表达式，表示只能包含数字和'-'
-    const regex = /^[0-9-]{20,25}$/;
+    const regex = /^[0-9-]{18,25}$/;
     return regex.test(input);
 };
  
@@ -81,7 +81,14 @@ const SearchPage = () => {
                             <p><strong>Cause:</strong> {constitutionResult.cause || 'N/A'}</p>
                             <p><strong>Vigilant:</strong> {constitutionResult.vigilant || 'N/A'}</p>
                             <p><strong>Improvement:</strong> {constitutionResult.improvement || 'N/A'}</p>
-                            <p><strong>RecommondReceipe:</strong> {constitutionResult.recommondReceipe || 'N/A'}</p>
+                            <div>
+                            <strong>RecommendRecipe:</strong>
+                            {(constitutionResult.recommendRecipe || 'N/A').split('\n').map((line, index) => (
+                                <React.Fragment key={index}>
+                                {line}<br/>
+                                </React.Fragment>
+                            ))}
+                            </div>
                         </div>
                         <div>
                             <table style={{ margin: 'auto' }}>

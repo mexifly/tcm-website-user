@@ -16,7 +16,7 @@ type constitution = {
     cause: string;
     vigilant: string;
     improvement: string;
-    recommondReceipe: string;
+    recommendRecipe: string;
 }
 
 export async function GET(request: Request): Promise<Response> {

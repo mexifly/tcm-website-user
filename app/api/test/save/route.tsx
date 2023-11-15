@@ -1,5 +1,42 @@
 import { query } from "@/lib/db";
 import { OkPacket } from 'mysql2';
+import axios from 'axios';
+
+// Define the expected structure of the Cohere response
+interface CohereResponse {
+  text: string;
+}
+
+async function getCohereResponse(prompt: string): Promise<string> {
+    try {
+      const options = {
+        method: 'POST',
+        url: 'https://api.cohere.ai/v1/generate',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/json',
+          authorization: process.env.MY_API_KEY // Ensure this is securely configured
+        },
+        data: {
+          truncate: 'END',
+          return_likelihoods: 'NONE',
+          prompt: prompt
+        }
+      };
+  
+      const response = await axios.request<CohereResponse>(options);
+  
+      // Assuming the structure of the response is as you provided
+      const recipeText = response.data.generations[0].text;
+  
+      return recipeText;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
+
 
 
 function calculateTransformationScoreByGroup(responses: Responses[]): { [groupId: number]: number } {
@@ -152,6 +189,15 @@ export async function POST(request: any): Promise<Response> {
             query: `UPDATE respondents SET constitution = ? WHERE id = ?`,
             values: [constitutionType, respondent_id],
         });
+
+        const coherePrompt = `Provide recipe for ${constitutionType} patient under current season in TCM`;
+        const recipe = await getCohereResponse(coherePrompt);
+        console.log("recipe", recipe);
+        await query({
+            query: `UPDATE constitution_results SET recommendRecipe = ? WHERE consType = ?`,
+            values: [recipe, constitutionType],
+        });
+        
         return new Response(JSON.stringify({ success: true, reference_number }), {
             status: 200,
             headers: {
