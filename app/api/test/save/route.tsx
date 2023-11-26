@@ -197,7 +197,7 @@ export async function POST(request: any): Promise<Response> {
             query: `UPDATE constitution_results SET recommendRecipe = ? WHERE consType = ?`,
             values: [recipe, constitutionType],
         });
-        
+        console.log("recipe updated succesffuly!");
         return new Response(JSON.stringify({ success: true, reference_number }), {
             status: 200,
             headers: {
